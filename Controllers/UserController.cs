@@ -22,19 +22,10 @@ namespace UserManagement.Controllers {
             {
                 return BadRequest(ModelState);
             }
-            
-            Regex regex = new Regex(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$",
-            RegexOptions.CultureInvariant | RegexOptions.Singleline);
-            bool isValidEmail = regex.IsMatch(newUser.email);
-            if (!isValidEmail){
-                return StatusCode(403, "Invalid email");
-            }
 
-            if (newUser.givenName == ""){
-                return StatusCode(403, "Invalid given name");
-            }
-            if (newUser.familyName == ""){
-                return StatusCode(403, "Invalid family name");
+            bool isValidEmail = _users.ValidateEmail(newUser.email);
+            if (!isValidEmail){
+                return StatusCode(400, "Invalid email");
             }
 
             var userCreated = _users.Create(newUser);
@@ -62,24 +53,15 @@ namespace UserManagement.Controllers {
                 return BadRequest(ModelState);
             }
 
-            Regex regex = new Regex(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$",
-            RegexOptions.CultureInvariant | RegexOptions.Singleline);
-            bool isValidEmail = regex.IsMatch(updateUser.email);
+            bool isValidEmail = _users.ValidateEmail(updateUser.email);
             if (!isValidEmail){
-                return StatusCode(403, "Invalid email");
-            }
-
-            if (updateUser.givenName == ""){
-                return StatusCode(403, "Invalid given name");
-            }
-            if (updateUser.familyName == ""){
-                return StatusCode(403, "Invalid family name");
+                return StatusCode(400, "Invalid email");
             }
             
             var userInfo = _users.Read(updateUser.id);
             if (userInfo == null)
             {
-                return StatusCode(403, "User does not exist");
+                return StatusCode(400, "User does not exist");
             }
             
             userInfo.email = updateUser.email;
@@ -98,7 +80,7 @@ namespace UserManagement.Controllers {
             }
         }
 
-        [HttpPost("delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult DeleteUser ([FromRoute] int id) {
             if (!ModelState.IsValid)
             {
@@ -107,7 +89,7 @@ namespace UserManagement.Controllers {
             var userInfo = _users.Read(id);
             if (userInfo == null)
             {
-                return StatusCode(403, "User does not exist");
+                return StatusCode(400, "User does not exist");
             }
             var deletedUser = _users.Delete(userInfo);
             if (deletedUser == null)
