@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using UserManagement.Repositories;
 
 namespace UserManagement
 {
@@ -32,6 +33,8 @@ namespace UserManagement
                 options.UseSqlite("Data Source=usermanagement.db");
             });
             services.AddControllers();
+            services.AddTransient<IUserRepo, UserRepo>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserManagement", Version = "v1" });
