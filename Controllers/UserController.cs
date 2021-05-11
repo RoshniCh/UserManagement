@@ -23,16 +23,17 @@ namespace UserManagement.Controllers {
                 return BadRequest(ModelState);
             }
             
-            var isValid = CheckEmail(newUser.email);
-            if (!isValid){
+            Regex regex = new Regex(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$",
+            RegexOptions.CultureInvariant | RegexOptions.Singleline);
+            bool isValidEmail = regex.IsMatch(newUser.email);
+            if (!isValidEmail){
                 return StatusCode(403, "Invalid email");
             }
-            var validGivenName = CheckName(newUser.givenName);
-            if (!validGivenName){
+
+            if (newUser.givenName == ""){
                 return StatusCode(403, "Invalid given name");
             }
-            var validFamilyName = CheckName(newUser.familyName);
-            if (!validFamilyName){
+            if (newUser.familyName == ""){
                 return StatusCode(403, "Invalid family name");
             }
 
@@ -44,7 +45,7 @@ namespace UserManagement.Controllers {
             }
             else
             {
-                return StatusCode(200);
+                return StatusCode(200, "User Id created is " + userCreated.id);
             }
         }
 
@@ -61,16 +62,17 @@ namespace UserManagement.Controllers {
                 return BadRequest(ModelState);
             }
 
-            var isValid = CheckEmail(updateUser.email);
-            if (!isValid){
+            Regex regex = new Regex(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$",
+            RegexOptions.CultureInvariant | RegexOptions.Singleline);
+            bool isValidEmail = regex.IsMatch(updateUser.email);
+            if (!isValidEmail){
                 return StatusCode(403, "Invalid email");
             }
-            var validGivenName = CheckName(updateUser.givenName);
-            if (!validGivenName){
+
+            if (updateUser.givenName == ""){
                 return StatusCode(403, "Invalid given name");
             }
-            var validFamilyName = CheckName(updateUser.familyName);
-            if (!validFamilyName){
+            if (updateUser.familyName == ""){
                 return StatusCode(403, "Invalid family name");
             }
             
@@ -116,26 +118,6 @@ namespace UserManagement.Controllers {
             {
                 return StatusCode(200);
             }
-        }
-
-        public bool CheckEmail(string email) {
-            Regex regex = new Regex(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$",
-            RegexOptions.CultureInvariant | RegexOptions.Singleline);
-            bool isValidEmail = regex.IsMatch(email);
-            return isValidEmail;
-        }
-
-        public bool CheckName(string name) {
-            bool validName;
-            if (name == "")
-            {
-                validName = false;
-            }
-            else
-            {
-                validName = true;
-            }
-            return validName;
         }
     }
 }
