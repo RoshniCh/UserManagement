@@ -6,7 +6,7 @@ Git application, .NET SDK, Postman
 2. Clone the application from github to the local directory. 
 (Open git bash in the folder and type the following command.
 git clone https://github.com/RoshniCh/UserManagement.git)
-3. Do a dotnet run of the application in the command prompt
+3. Open the application folder. Do a dotnet run of the application in the command prompt
 (dotnet run) 
 This will start the server and the database (SQLite) will be created
 4. Use Postman Collection provided (User management) to run the endpoints. Import using Link.
